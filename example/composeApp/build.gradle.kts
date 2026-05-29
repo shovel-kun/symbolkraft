@@ -1,4 +1,4 @@
-import io.github.kingsword09.symbolcraft.model.*
+import com.ebisuzawa.symbolkraft.model.*
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -8,8 +8,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
-    alias(libs.plugins.symbolCraft)
+    alias(libs.plugins.symbolKraft)
 }
 
 kotlin {
@@ -33,17 +32,17 @@ kotlin {
     
     sourceSets {
         androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(compose.uiTooling)
+            implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.compose.ui.tooling)
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.ui)
+            implementation(libs.compose.components.resources)
+            implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
         }
@@ -58,11 +57,11 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.kingsword09.example"
+    namespace = "com.ebisuzawa.symbolkraft.example"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "io.github.kingsword09.example"
+        applicationId = "com.ebisuzawa.symbolkraft.example"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -84,10 +83,10 @@ android {
     }
 }
 
-symbolCraft {
+symbolKraft {
     // Output directory for generated icons
     outputDirectory.set("src/commonMain/kotlin/generated/symbols")
-    packageName.set("io.github.kingsword09.example")
+    packageName.set("com.ebisuzawa.symbolkraft.example")
 
     // Enable preview generation (optional)
     generatePreview.set(true)
@@ -144,11 +143,11 @@ symbolCraft {
 
 compose.desktop {
     application {
-        mainClass = "io.github.kingsword09.example.MainKt"
+        mainClass = "com.ebisuzawa.symbolkraft.example.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "io.github.kingsword09.example"
+            packageName = "com.ebisuzawa.symbolkraft.example"
             packageVersion = "1.0.0"
         }
     }

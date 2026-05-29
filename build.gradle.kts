@@ -12,7 +12,7 @@ plugins {
     signing
 }
 
-group = "io.github.kingsword09"
+group = "com.ebisuzawa"
 
 version = "0.3.4"
 
@@ -52,14 +52,14 @@ dependencies {
 
 // Configure Gradle Plugin Portal publication
 gradlePlugin {
-    website = "https://github.com/kingsword09/SymbolCraft"
-    vcsUrl = "https://github.com/kingsword09/SymbolCraft"
+    website = "https://github.com/shovel-kun/SymbolKraft"
+    vcsUrl = "https://github.com/shovel-kun/SymbolKraft"
 
     plugins {
-        create("symbolcraft") {
-            id = "io.github.kingsword09.symbolcraft"
-            implementationClass = "io.github.kingsword09.symbolcraft.plugin.SymbolCraftPlugin"
-            displayName = "SymbolCraft - Multi-Library Icon Generator"
+        create("symbolkraft") {
+            id = "com.ebisuzawa.symbolkraft"
+            implementationClass = "com.ebisuzawa.symbolkraft.plugin.SymbolKraftPlugin"
+            displayName = "SymbolKraft - Multi-Library Icon Generator"
             description =
                 "Generate icons on-demand from multiple libraries (Material Symbols, Bootstrap Icons, etc.) for Compose Multiplatform with smart caching."
             tags =
@@ -72,15 +72,15 @@ gradlePlugin {
 mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
     signAllPublications()
-    coordinates(group.toString(), "symbolcraft", version.toString())
+    coordinates(group.toString(), "symbolkraft", version.toString())
 
     pom {
-        name.set("SymbolCraft")
+        name.set("SymbolKraft")
         description.set(
             "Generate icons on-demand from multiple libraries (Material Symbols, Bootstrap Icons, etc.) for Compose Multiplatform with smart caching."
         )
         inceptionYear.set("2025")
-        url.set("https://github.com/kingsword09/SymbolCraft")
+        url.set("https://github.com/shovel-kun/SymbolKraft")
 
         licenses {
             license {
@@ -92,17 +92,17 @@ mavenPublishing {
 
         developers {
             developer {
-                id.set("kingsword09")
-                name.set("kingsword09")
-                url.set("https://github.com/kingsword09")
-                email.set("kingsword09@gmail.com")
+                id.set("shovel-kun")
+                name.set("shovel-kun")
+                url.set("https://github.com/shovel-kun")
+                email.set("ebisuzawakurumi@proton.me")
             }
         }
 
         scm {
-            url.set("https://github.com/kingsword09/SymbolCraft")
-            connection.set("scm:git:git://github.com/kingsword09/SymbolCraft.git")
-            developerConnection.set("scm:git:ssh://git@github.com/kingsword09/SymbolCraft.git")
+            url.set("https://github.com/shovel-kun/SymbolKraft")
+            connection.set("scm:git:git://github.com/shovel-kun/SymbolKraft.git")
+            developerConnection.set("scm:git:ssh://git@github.com/shovel-kun/SymbolKraft.git")
         }
     }
 }
@@ -170,6 +170,8 @@ java {
 
 tasks.named("check") { dependsOn("ktfmtCheck") }
 
+tasks.withType<Jar>().configureEach { from(listOf("LICENSE", "NOTICE")) { into("META-INF") } }
+
 // Configure javadocJar to use Dokka V2 output
 tasks.named<Jar>("javadocJar") {
     dependsOn("dokkaGeneratePublicationJavadoc")
@@ -182,7 +184,7 @@ tasks.jar {
         attributes(
             "Implementation-Title" to project.name,
             "Implementation-Version" to project.version,
-            "Implementation-Vendor" to "kingsword09",
+            "Implementation-Vendor" to "shovel-kun",
             "Built-By" to System.getProperty("user.name"),
             "Built-JDK" to System.getProperty("java.version"),
             "Built-Gradle" to gradle.gradleVersion,

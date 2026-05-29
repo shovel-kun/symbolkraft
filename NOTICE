@@ -1,0 +1,9 @@
+SymbolKraft
+
+This product includes software developed by the SymbolCraft project
+(https://github.com/kingsword09/SymbolCraft).
+
+SymbolKraft is a modified fork of SymbolCraft. Modifications include renaming the
+project and publication coordinates to SymbolKraft/com.ebisuzawa, changing the
+public Gradle plugin id and DSL/task names, and updating generated Compose
+preview imports to AndroidX Preview.

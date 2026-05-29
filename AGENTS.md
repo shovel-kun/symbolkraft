@@ -1,14 +1,14 @@
-# SymbolCraft - 开发指南
+# SymbolKraft - 开发指南
 
 ## 项目概述
 
-**SymbolCraft** 是一个用于 Kotlin Multiplatform 项目的 Gradle 插件，支持从多个图标库（Material Symbols、Bootstrap Icons、Heroicons 等）按需生成图标。
+**SymbolKraft** 是一个用于 Kotlin Multiplatform 项目的 Gradle 插件，支持从多个图标库（Material Symbols、Bootstrap Icons、Heroicons 等）按需生成图标。
 
-- **版本**: v0.3.1
+- **版本**: v0.3.4
 - **状态**: ✅ 已发布到 Gradle Plugin Portal 和 Maven Central
 - **语言**: Kotlin 2.0.0
 - **最低 Gradle 版本**: 8.0+
-- **仓库**: https://github.com/kingsword09/SymbolCraft
+- **仓库**: https://github.com/shovel-kun/SymbolKraft
 
 ### 核心特性
 
@@ -37,16 +37,16 @@
 ## 项目结构
 
 ```
-SymbolCraft/
+SymbolKraft/
 ├── build.gradle.kts                    # 插件构建配置
 ├── gradle.properties                   # Gradle 配置
 ├── settings.gradle.kts                 # Gradle 设置
 ├── libs.versions.toml                  # 版本目录
 │
-├── src/main/kotlin/io/github/kingsword09/symbolcraft/
+├── src/main/kotlin/com/ebisuzawa/symbolkraft/
 │   ├── plugin/                         # Gradle 插件核心
-│   │   ├── SymbolCraftPlugin.kt        # 插件入口，注册任务
-│   │   ├── SymbolCraftExtension.kt     # DSL 配置接口
+│   │   ├── SymbolKraftPlugin.kt        # 插件入口，注册任务
+│   │   ├── SymbolKraftExtension.kt     # DSL 配置接口
 │   │   └── NamingConfig.kt             # 命名配置
 │   │
 │   ├── tasks/                          # Gradle 任务
@@ -78,7 +78,7 @@ SymbolCraft/
 │   │   │       ├── kotlin/
 │   │   │       │   └── generated/symbols/  # 生成的图标
 │   │   │       └── composeResources/
-│   │   └── build.gradle.kts            # 使用 SymbolCraft 插件
+│   │   └── build.gradle.kts            # 使用 SymbolKraft 插件
 │   └── iosApp/                         # iOS 应用
 │
 ├── README.md                           # 英文文档
@@ -90,25 +90,25 @@ SymbolCraft/
 
 ## 核心组件说明
 
-### 1. **SymbolCraftPlugin** (插件入口)
-**位置**: `src/main/kotlin/io/github/kingsword09/symbolcraft/plugin/SymbolCraftPlugin.kt`
+### 1. **SymbolKraftPlugin** (插件入口)
+**位置**: `src/main/kotlin/com/ebisuzawa/symbolkraft/plugin/SymbolKraftPlugin.kt`
 
 **职责**:
-- 注册 `symbolCraft` DSL 扩展
+- 注册 `symbolKraft` DSL 扩展
 - 注册 Gradle 任务：
-  - `generateSymbolCraftIcons` - 生成所有配置的图标
-  - `cleanSymbolCraftCache` - 清理 SVG 缓存
-  - `cleanSymbolCraftIcons` - 清理生成的图标文件
-  - `validateSymbolCraftConfig` - 验证配置
+  - `generateSymbolKraftIcons` - 生成所有配置的图标
+  - `cleanSymbolKraftCache` - 清理 SVG 缓存
+  - `cleanSymbolKraftIcons` - 清理生成的图标文件
+  - `validateSymbolKraftConfig` - 验证配置
 - 自动添加任务依赖：在 Kotlin 编译之前生成图标
 
 **关键代码**:
 ```kotlin
-class SymbolCraftPlugin : Plugin<Project> {
+class SymbolKraftPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        val extension = project.extensions.create("symbolCraft", SymbolCraftExtension::class.java)
+        val extension = project.extensions.create("symbolKraft", SymbolKraftExtension::class.java)
 
-        val generateTask = project.tasks.register("generateSymbolCraftIcons", GenerateSymbolsTask::class.java) {
+        val generateTask = project.tasks.register("generateSymbolKraftIcons", GenerateSymbolsTask::class.java) {
             // 配置任务...
         }
         
@@ -126,8 +126,8 @@ class SymbolCraftPlugin : Plugin<Project> {
 
 ---
 
-### 2. **SymbolCraftExtension** (DSL 配置)
-**位置**: `src/main/kotlin/.../plugin/SymbolCraftExtension.kt`
+### 2. **SymbolKraftExtension** (DSL 配置)
+**位置**: `src/main/kotlin/.../plugin/SymbolKraftExtension.kt`
 
 **职责**:
 - 提供用户友好的 DSL API
@@ -142,7 +142,7 @@ class SymbolCraftPlugin : Plugin<Project> {
 
 **配置选项**:
 ```kotlin
-abstract class SymbolCraftExtension {
+abstract class SymbolKraftExtension {
     abstract val packageName: Property<String>              // 包名
     abstract val outputDirectory: Property<String>          // 输出目录
     abstract val cacheEnabled: Property<Boolean>            // 缓存开关
@@ -210,7 +210,7 @@ abstract class SymbolCraftExtension {
 **职责**:
 - 使用 `svg-to-compose` 库将 SVG 转换为 Compose ImageVector
 - 生成确定性代码（移除时间戳、标准化浮点数）
-- 可选生成 Compose Preview 函数
+- 可选生成 Compose Preview 函数，统一使用 `androidx.compose.ui.tooling.preview.Preview`
 - 生成 `__MaterialSymbols.kt` 访问对象
 
 **输出文件**:
@@ -306,7 +306,7 @@ abstract class IconNameTransformer {
 1. **修改插件代码**
    ```bash
    # 编辑 src/main/kotlin/ 下的源文件
-   vim src/main/kotlin/io/github/kingsword09/symbolcraft/plugin/GenerateSymbolsTask.kt
+   vim src/main/kotlin/com/ebisuzawa/symbolkraft/plugin/GenerateSymbolsTask.kt
    ```
 
 2. **发布到本地 Maven**
@@ -317,7 +317,7 @@ abstract class IconNameTransformer {
 3. **在示例项目中测试**
    ```bash
    cd example
-   ./gradlew generateSymbolCraftIcons --info
+   ./gradlew generateSymbolKraftIcons --info
    ./gradlew :composeApp:run  # Desktop
    ```
 
@@ -360,7 +360,7 @@ abstract class IconNameTransformer {
 
 ### 缓存架构
 
-1. **SVG 下载缓存** (`build/symbolcraft-cache/svg-cache/`)
+1. **SVG 下载缓存** (`build/symbolkraft-cache/svg-cache/`)
    - 有效期：7 天
    - 包含：SVG 文件 + JSON 元数据
    - 元数据字段：`timestamp`, `url`, `hash`
@@ -378,7 +378,7 @@ abstract class IconNameTransformer {
 
 **相对路径（默认）**:
 ```kotlin
-cacheDirectory.set("symbolcraft-cache")  // → build/symbolcraft-cache/
+cacheDirectory.set("symbolkraft-cache")  // → build/symbolkraft-cache/
 ```
 - ✅ 自动清理未使用的缓存
 - ✅ 项目隔离
@@ -387,9 +387,9 @@ cacheDirectory.set("symbolcraft-cache")  // → build/symbolcraft-cache/
 **绝对路径（共享缓存）**:
 ```kotlin
 // Unix/Linux/macOS
-cacheDirectory.set("/var/tmp/symbolcraft")  // → /var/tmp/symbolcraft/
+cacheDirectory.set("/var/tmp/symbolkraft")  // → /var/tmp/symbolkraft/
 // Windows
-cacheDirectory.set("""C:\Temp\SymbolCraft""")
+cacheDirectory.set("""C:\Temp\SymbolKraft""")
 ```
 - ✅ 跨项目共享
 - ⚠️ 跳过自动清理（防止冲突）
@@ -480,14 +480,14 @@ dependencies {
 
 ### 添加新的 Gradle 任务
 
-1. 在 `SymbolCraftPlugin.kt` 中注册任务
+1. 在 `SymbolKraftPlugin.kt` 中注册任务
 2. 在 `tasks/` 目录创建任务类继承 `DefaultTask`
 3. 使用 `@TaskAction` 注解标记执行方法
 4. 配置任务的输入/输出以支持增量构建
 
 ### 添加新的配置选项
 
-1. 在 `SymbolCraftExtension.kt` 中添加 `Property<T>`
+1. 在 `SymbolKraftExtension.kt` 中添加 `Property<T>`
 2. 在 `GenerateSymbolsTask.kt` 中读取配置
 3. 更新配置哈希（`getConfigHash()`）
 4. 更新所有文档（README.md、README_ZH.md、AGENTS.md）
@@ -496,7 +496,7 @@ dependencies {
 
 1. 在 `model/IconConfig.kt` 中创建新的 `IconConfig` 实现
 2. 实现必需的方法：`buildUrl()`、`getCacheKey()`、`getSignature()`
-3. 在 `SymbolCraftExtension.kt` 中添加相应的 DSL 方法
+3. 在 `SymbolKraftExtension.kt` 中添加相应的 DSL 方法
 4. 更新文档和示例
 
 ### 修改 SVG 下载逻辑
@@ -529,24 +529,24 @@ dependencies {
 
 ### 启用详细日志
 ```bash
-./gradlew generateSymbolCraftIcons --info       # 信息级别
-./gradlew generateSymbolCraftIcons --debug      # 调试级别
-./gradlew generateSymbolCraftIcons --stacktrace # 堆栈跟踪
+./gradlew generateSymbolKraftIcons --info       # 信息级别
+./gradlew generateSymbolKraftIcons --debug      # 调试级别
+./gradlew generateSymbolKraftIcons --stacktrace # 堆栈跟踪
 ```
 
 ### 禁用配置缓存（调试用）
 ```bash
-./gradlew generateSymbolCraftIcons --no-configuration-cache
+./gradlew generateSymbolKraftIcons --no-configuration-cache
 ```
 
 ### 强制重新运行任务
 ```bash
-./gradlew generateSymbolCraftIcons --rerun-tasks
+./gradlew generateSymbolKraftIcons --rerun-tasks
 ```
 
 ### 查看任务依赖
 ```bash
-./gradlew generateSymbolCraftIcons --dry-run
+./gradlew generateSymbolKraftIcons --dry-run
 ```
 
 ### 查看生成的文件
@@ -555,7 +555,7 @@ dependencies {
 find . -path "*/generated/symbols/*" -name "*.kt"
 
 # 查看缓存状态
-du -sh build/symbolcraft-cache/
+du -sh build/symbolkraft-cache/
 ```
 
 ---
@@ -596,13 +596,13 @@ docs(readme): update installation guide
 1. Fork 仓库到你的 GitHub 账户
 2. Clone 到本地：
    ```bash
-   git clone https://github.com/YOUR_USERNAME/SymbolCraft.git
-   cd SymbolCraft
+   git clone https://github.com/YOUR_USERNAME/SymbolKraft.git
+   cd SymbolKraft
    ```
 
 3. 配置上游仓库：
    ```bash
-   git remote add upstream https://github.com/kingsword09/SymbolCraft.git
+   git remote add upstream https://github.com/shovel-kun/SymbolKraft.git
    ```
 
 ### 开发流程
@@ -616,7 +616,7 @@ docs(readme): update installation guide
    ```bash
    ./gradlew build
    ./gradlew publishToMavenLocal
-   cd example && ./gradlew generateSymbolCraftIcons
+   cd example && ./gradlew generateSymbolKraftIcons
    ```
 
 3. 提交更改
@@ -644,9 +644,9 @@ docs(readme): update installation guide
 ## 资源链接
 
 ### 官方资源
-- **GitHub 仓库**: https://github.com/kingsword09/SymbolCraft
-- **Gradle Plugin Portal**: https://plugins.gradle.org/plugin/io.github.kingsword09.symbolcraft
-- **Maven Central**: https://central.sonatype.com/artifact/io.github.kingsword09/symbolcraft
+- **GitHub 仓库**: https://github.com/shovel-kun/SymbolKraft
+- **Gradle Plugin Portal**: https://plugins.gradle.org/plugin/com.ebisuzawa.symbolkraft
+- **Maven Central**: https://central.sonatype.com/artifact/com.ebisuzawa/symbolkraft
 
 ### 相关工具
 - **Material Symbols 浏览器**: https://marella.github.io/material-symbols/demo/
@@ -662,15 +662,18 @@ docs(readme): update installation guide
 
 ## 联系方式
 
-- **维护者**: [@kingsword09](https://github.com/kingsword09)
-- **Email**: kingsword09@gmail.com
-- **问题反馈**: [GitHub Issues](https://github.com/kingsword09/SymbolCraft/issues)
+- **维护者**: [@shovel-kun](https://github.com/shovel-kun)
+- **Email**: ebisuzawakurumi@proton.me
+- **问题反馈**: [GitHub Issues](https://github.com/shovel-kun/SymbolKraft/issues)
 
 ---
 
 ## 更新日志
 
-### v0.3.1 (最新)
+### v0.3.4 (最新)
+- 👀 **预览注解迁移**: 生成的 Compose Preview 统一使用 `androidx.compose.ui.tooling.preview.Preview`。
+
+### v0.3.1
 - 🛡️ **安全强化**: 阻止外部 SVG 中的 XXE 与路径遍历攻击，新增内容类型与尺寸校验，并全面清理危险路径字符。
 - ♻️ **任务拆分**: `GenerateSymbolsTask` 拆分为更小的步骤，日志输出更具可读性，也为后续单元测试做好铺垫。
 - 📚 **文档增强**: 增补关键常量和默认值的设计，方便贡献者快速理解配置。
@@ -683,13 +686,13 @@ docs(readme): update installation guide
 - 🏷️ **命名转换重构**: 重写 IconNameTransformer，命名配置更加灵活可靠。
 
 ### v0.2.1
-- 🔥 **重大重构**: 插件重命名为 SymbolCraft（从 MaterialSymbolsPlugin）
+- 🔥 **重大重构**: 插件重命名为 SymbolKraft（从 MaterialSymbolsPlugin）
 - 🎉 **多图标库支持**: Material Symbols + Bootstrap Icons + Heroicons + 自定义 URL
 - 🏷️ **灵活命名**: 支持 PascalCase、camelCase、snake_case 等多种命名规则
 - ⚡ **配置重试**: 添加 maxRetries 和 retryDelayMs 配置
 - 📚 **Dokka V2**: 完整的 API 文档生成支持
 - 📦 **新的 DSL**: externalIcon/externalIcons 方法
-- 🧹 **更新缓存**: symbolcraft-cache 目录（从 material-symbols-cache）
+- 🧹 **更新缓存**: symbolkraft-cache 目录（从 material-symbols-cache）
 - 📝 **文档改进**: 更新所有 README 和开发指南
 
 ### v0.1.2

@@ -85,8 +85,8 @@ jobs:
       working-directory: example
       run: |
         chmod +x ./gradlew
-        # Test SymbolCraft icon generation
-        ./gradlew :composeApp:generateSymbolCraftIcons --stacktrace
+        # Test SymbolKraft icon generation
+        ./gradlew :composeApp:generateSymbolKraftIcons --stacktrace
         # Build the example project
         ./gradlew build --stacktrace
 
@@ -113,7 +113,7 @@ jobs:
 
     - name: Validate plugin tasks
       run: |
-        ./gradlew tasks --all | grep -i symbolcraft || echo "No SymbolCraft tasks found yet"
+        ./gradlew tasks --all | grep -i symbolkraft || echo "No SymbolKraft tasks found yet"
         ./gradlew publishToMavenLocal --stacktrace
       env:
         ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.OSSRH_USERNAME }}
@@ -123,9 +123,9 @@ jobs:
 
     - name: Verify plugin publication
       run: |
-        if [ -d ~/.m2/repository/io/github/kingsword09 ]; then
+        if [ -d ~/.m2/repository/com/ebisuzawa ]; then
           echo "✅ Plugin published to local Maven repository"
-          find ~/.m2/repository/io/github/kingsword09 -name "*.jar" | head -5
+          find ~/.m2/repository/com/ebisuzawa -name "*.jar" | head -5
         else
           echo "❌ Plugin not found in local Maven repository"
           exit 1
@@ -199,20 +199,20 @@ jobs:
         tag_name: v${{ steps.extract_version.outputs.version }}
         name: v${{ steps.extract_version.outputs.version }}
         body: |
-          ## SymbolCraft v${{ steps.extract_version.outputs.version }}
+          ## SymbolKraft v${{ steps.extract_version.outputs.version }}
 
           Generate icons on-demand from multiple libraries (Material Symbols, Bootstrap Icons, etc.) for Compose Multiplatform with smart caching.
 
           ### 📦 Installation
           ```kotlin
           plugins {
-              id("io.github.kingsword09.symbolcraft") version "${{ steps.extract_version.outputs.version }}"
+              id("com.ebisuzawa.symbolkraft") version "${{ steps.extract_version.outputs.version }}"
           }
           ```
 
           ### 🔗 Links
-          - [Gradle Plugin Portal](https://plugins.gradle.org/plugin/io.github.kingsword09.symbolcraft)
-          - [Documentation](https://github.com/kingsword09/SymbolCraft#readme)
+          - [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.ebisuzawa.symbolkraft)
+          - [Documentation](https://github.com/shovel-kun/SymbolKraft#readme)
         files: |
           build/libs/*.jar
           build/distributions/*.zip
@@ -313,22 +313,22 @@ jobs:
     - name: Notify success
       if: needs.publish-gradle-plugin.result == 'success' && needs.publish-maven-central.result == 'success'
       run: |
-        echo "🎉 SymbolCraft release completed successfully!"
+        echo "🎉 SymbolKraft release completed successfully!"
         echo "✅ Plugin published to Gradle Plugin Portal"
         echo "✅ Plugin published to Maven Central"
-        echo "🔗 Gradle Portal: https://plugins.gradle.org/plugin/io.github.kingsword09.symbolcraft"
-        echo "🔗 Maven Central: https://central.sonatype.com/artifact/io.github.kingsword09/symbolcraft"
+        echo "🔗 Gradle Portal: https://plugins.gradle.org/plugin/com.ebisuzawa.symbolkraft"
+        echo "🔗 Maven Central: https://central.sonatype.com/artifact/com.ebisuzawa/symbolkraft"
 
     - name: Notify partial success
       if: (needs.publish-gradle-plugin.result == 'success' && needs.publish-maven-central.result != 'success') || (needs.publish-gradle-plugin.result != 'success' && needs.publish-maven-central.result == 'success')
       run: |
-        echo "⚠️ SymbolCraft release partially completed!"
+        echo "⚠️ SymbolKraft release partially completed!"
         echo "Gradle Portal: ${{ needs.publish-gradle-plugin.result }}"
         echo "Maven Central: ${{ needs.publish-maven-central.result }}"
 
     - name: Notify failure
       if: needs.publish-gradle-plugin.result == 'failure' && needs.publish-maven-central.result == 'failure'
       run: |
-        echo "❌ SymbolCraft release failed!"
+        echo "❌ SymbolKraft release failed!"
         echo "🔍 Check the logs for details"
         echo "📋 Common issues: Gradle Portal credentials, Maven Central credentials, version conflicts"

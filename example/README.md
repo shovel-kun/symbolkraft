@@ -1,16 +1,18 @@
-# SymbolCraft Example Application
+# SymbolKraft Example Application
 
-This is a complete Kotlin Multiplatform example application demonstrating the usage of the **SymbolCraft** Gradle plugin.
+This is a complete Kotlin Multiplatform example application demonstrating the usage of the **SymbolKraft** Gradle plugin.
+
+SymbolKraft is a modified fork of [SymbolCraft](https://github.com/kingsword09/SymbolCraft) published under `com.ebisuzawa` coordinates.
 
 ## Overview
 
 This example showcases:
 - **Multi-platform support**: Android, iOS, and Desktop (JVM)
-- **Icon generation**: Using SymbolCraft to generate icons from multiple sources
+- **Icon generation**: Using SymbolKraft to generate icons from multiple sources
 - **Material Symbols**: Various weights, variants, and fill states
 - **External icon libraries**: MDI (Material Design Icons) integration
 - **Compose Preview**: Generated preview functions for all icons
-- **Modern configuration**: Using the latest SymbolCraft DSL features
+- **Modern configuration**: Using the latest SymbolKraft DSL features
 
 ## Project Structure
 
@@ -21,24 +23,24 @@ example/
 │   │   ├── commonMain/           # Common code for all platforms
 │   │   │   └── kotlin/
 │   │   │       ├── generated/    # Generated icons (gitignored)
-│   │   │       │   └── symbols/  # SymbolCraft output
+│   │   │       │   └── symbols/  # SymbolKraft output
 │   │   │       └── App.kt        # Main app composable
 │   │   ├── androidMain/          # Android-specific code
 │   │   ├── iosMain/              # iOS-specific code
 │   │   └── jvmMain/              # Desktop-specific code
-│   └── build.gradle.kts          # SymbolCraft configuration
+│   └── build.gradle.kts          # SymbolKraft configuration
 └── iosApp/                        # iOS app wrapper
 ```
 
-## SymbolCraft Configuration
+## SymbolKraft Configuration
 
 The example demonstrates various configuration options in `composeApp/build.gradle.kts`:
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Output directory for generated icons
     outputDirectory.set("src/commonMain/kotlin/generated/symbols")
-    packageName.set("io.github.kingsword09.example")
+    packageName.set("com.ebisuzawa.symbolkraft.example")
     generatePreview.set(true)
 
     // Icon naming configuration
@@ -95,7 +97,7 @@ symbolCraft {
 Before building the app, generate the icons:
 
 ```bash
-./gradlew generateSymbolCraftIcons
+./gradlew generateSymbolKraftIcons
 ```
 
 This will:
@@ -157,16 +159,16 @@ open iosApp/iosApp.xcodeproj
 
 ```bash
 # Generate icons
-./gradlew generateSymbolCraftIcons
+./gradlew generateSymbolKraftIcons
 
 # Clean generated icons
-./gradlew cleanSymbolCraftIcons
+./gradlew cleanSymbolKraftIcons
 
 # Clean icon cache
-./gradlew cleanSymbolCraftCache
+./gradlew cleanSymbolKraftCache
 
 # Validate configuration
-./gradlew validateSymbolCraftConfig
+./gradlew validateSymbolKraftConfig
 
 # Clean everything
 ./gradlew clean
@@ -178,10 +180,10 @@ open iosApp/iosApp.xcodeproj
 ### Troubleshooting
 
 **Problem**: Icons not found after generation  
-**Solution**: Run `./gradlew clean` then `./gradlew generateSymbolCraftIcons`
+**Solution**: Run `./gradlew clean` then `./gradlew generateSymbolKraftIcons`
 
 **Problem**: Build fails with missing imports  
-**Solution**: Ensure icons are generated before building: `./gradlew generateSymbolCraftIcons`
+**Solution**: Ensure icons are generated before building: `./gradlew generateSymbolKraftIcons`
 
 **Problem**: iOS build fails  
 **Solution**: Run `./gradlew clean` and regenerate the iOS framework
@@ -191,8 +193,8 @@ open iosApp/iosApp.xcodeproj
 Generated icons can be used in Compose like this:
 
 ```kotlin
-import io.github.kingsword09.example.icons.materialsymbols.Icons
-import io.github.kingsword09.example.icons.materialsymbols.icons.*
+import com.ebisuzawa.symbolkraft.example.icons.materialsymbols.Icons
+import com.ebisuzawa.symbolkraft.example.icons.materialsymbols.icons.*
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 
@@ -227,13 +229,16 @@ The example enables preview generation with `generatePreview.set(true)`. You can
 3. Click the "Preview" panel on the right side
 4. View rendered icons directly in the IDE
 
+Generated previews use `androidx.compose.ui.tooling.preview.Preview` and require
+`org.jetbrains.compose.ui:ui-tooling-preview`.
+
 ## Learn More
 
-- [SymbolCraft Documentation](../README.md)
+- [SymbolKraft Documentation](../README.md)
 - [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)
 - [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)
 - [Material Symbols](https://fonts.google.com/icons)
 
 ## License
 
-This example is part of the SymbolCraft project and is licensed under Apache 2.0.
+This example is part of the SymbolKraft project and is licensed under Apache 2.0.

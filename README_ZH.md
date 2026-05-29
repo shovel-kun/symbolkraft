@@ -1,11 +1,15 @@
-# SymbolCraft 🎨
+# SymbolKraft 🎨
 
-![Maven Central Version](https://img.shields.io/maven-central/v/io.github.kingsword09/symbolcraft)
+![Maven Central Version](https://img.shields.io/maven-central/v/com.ebisuzawa/symbolkraft)
 
 
 > **语言版本**: [English](README.md) | [中文](README_ZH.md)
 
 一个强大的 Gradle 插件，用于在 Kotlin Multiplatform 项目中按需从多个图标库（Material Symbols、Bootstrap Icons、Heroicons 等）生成图标，支持智能缓存、确定性构建和高性能并行生成。
+
+> SymbolKraft 是 [SymbolCraft](https://github.com/kingsword09/SymbolCraft) 的修改版 fork。
+> 本项目使用新的 `com.ebisuzawa` 发布坐标，不会以原始
+> `io.github.kingsword09.symbolcraft` 插件身份发布。
 
 ## ✨ 特性
 
@@ -32,21 +36,21 @@
 
 ```toml
 [plugins]
-symbolCraft = { id = "io.github.kingsword09.symbolcraft", version = "x.x.x" }
+symbolKraft = { id = "com.ebisuzawa.symbolkraft", version = "x.x.x" }
 ```
 
 在你的 `build.gradle.kts` 文件中：
 
 ```kotlin
 plugins {
-    alias(libs.plugins.symbolCraft)
+    alias(libs.plugins.symbolKraft)
 }
 ```
 
 ### 2. 配置插件
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // 基础配置
     packageName.set("com.app.symbols")
     outputDirectory.set("src/commonMain/kotlin")  // 支持多平台项目
@@ -112,7 +116,7 @@ symbolCraft {
 运行以下命令生成配置的图标：
 
 ```bash
-./gradlew generateSymbolCraftIcons
+./gradlew generateSymbolKraftIcons
 ```
 
 生成过程会显示详细进度：
@@ -188,7 +192,7 @@ fun MyScreen() {
 ### 启用预览生成
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // 启用预览功能
     generatePreview.set(true)  // 生成 @Preview 函数
 
@@ -213,17 +217,21 @@ symbolCraft {
 
 ### 多平台预览支持
 
-预览生成由底层的 `svg-to-compose` 库处理，支持：
-- **Android 项目**: 使用 `androidx.compose.ui.tooling.preview.Preview`
-- **Desktop 项目**: 使用 `androidx.compose.desktop.ui.tooling.preview.Preview`
-- **多平台项目**: 根据库配置决定
+生成的预览函数使用 `androidx.compose.ui.tooling.preview.Preview`。请在编译生成预览的 source
+set 中添加 Compose Multiplatform 预览依赖：
+
+```kotlin
+implementation("org.jetbrains.compose.ui:ui-tooling-preview")
+```
+
+旧的 `org.jetbrains.compose.ui.tooling.preview.Preview` 注解不再生成，也不再支持。
 
 ## 📋 配置选项
 
 ### 基础配置
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // 生成的 Kotlin 包名（必需）
     packageName.set("com.yourcompany.app.symbols")
 
@@ -232,7 +240,7 @@ symbolCraft {
 
     // 缓存配置
     cacheEnabled.set(true)  // 默认：true
-    cacheDirectory.set("symbolcraft-cache")  // 默认："symbolcraft-cache"（相对于 build/）
+    cacheDirectory.set("symbolkraft-cache")  // 默认："symbolkraft-cache"（相对于 build/）
 
     // 预览配置
     generatePreview.set(false)  // 默认：false - 是否生成 Compose @Preview 函数
@@ -272,7 +280,7 @@ symbolCraft {
 ### 便捷配置方法
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     materialSymbol("example") {
         // 基础方法（使用 Int）
         style(weight = 400, variant = SymbolVariant.OUTLINED, fill = SymbolFill.UNFILLED)
@@ -305,7 +313,7 @@ symbolCraft {
 控制生成的图标类名的转换方式：
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     naming {
         // 预设命名规则
         pascalCase()              // HomeIcon（默认）
@@ -349,33 +357,33 @@ symbolCraft {
 
 | 任务 | 描述 |
 |------|------|
-| `generateSymbolCraftIcons` | 生成所有配置的图标库图标 |
-| `cleanSymbolCraftCache` | 清理缓存的 SVG 文件 |
-| `cleanSymbolCraftIcons` | 清理所有生成的图标文件 |
-| `validateSymbolCraftConfig` | 验证图标配置的有效性 |
+| `generateSymbolKraftIcons` | 生成所有配置的图标库图标 |
+| `cleanSymbolKraftCache` | 清理缓存的 SVG 文件 |
+| `cleanSymbolKraftIcons` | 清理所有生成的图标文件 |
+| `validateSymbolKraftConfig` | 验证图标配置的有效性 |
 
 ### 任务示例
 
 ```bash
 # 生成图标（增量构建）
-./gradlew generateSymbolCraftIcons
+./gradlew generateSymbolKraftIcons
 
 # 强制重新生成所有图标
-./gradlew generateSymbolCraftIcons --rerun-tasks
+./gradlew generateSymbolKraftIcons --rerun-tasks
 
 # 清理缓存
-./gradlew cleanSymbolCraftCache
+./gradlew cleanSymbolKraftCache
 
 # 清理生成的文件
-./gradlew cleanSymbolCraftIcons
+./gradlew cleanSymbolKraftIcons
 
 # 验证配置
-./gradlew validateSymbolCraftConfig
+./gradlew validateSymbolKraftConfig
 ```
 
 ## 📚 文档生成（Dokka）
 
-SymbolCraft 提供 Dokka V2 配置，可为插件及其 DSL 生成可发布的 API 文档，便于同步到 Gradle Plugin Portal 或 Maven Central。
+SymbolKraft 提供 Dokka V2 配置，可为插件及其 DSL 生成可发布的 API 文档，便于同步到 Gradle Plugin Portal 或 Maven Central。
 
 ### 本地生成文档
 
@@ -419,7 +427,7 @@ your-project/
 │                           ├── BellBootstrapicons.kt
 │                           └── HouseBootstrapicons.kt
 └── build/
-    └── symbolcraft-cache/                        # 缓存目录（默认位置）
+    └── symbolkraft-cache/                        # 缓存目录（默认位置）
         ├── temp-svgs/                            # SVG 临时文件（按库组织）
         │   ├── material-symbols/
         │   └── external-bootstrapicons/
@@ -433,7 +441,7 @@ your-project/
 为了避免生成的文件在 Git 中显示为新文件，建议将生成目录添加到 `.gitignore`：
 
 ```gitignore
-# SymbolCraft 生成的文件（根据你的配置调整包名）
+# SymbolKraft 生成的文件（根据你的配置调整包名）
 **/icons/
 **/__Icons.kt
 
@@ -450,7 +458,7 @@ your-project/
 
 1. **忽略生成文件（推荐）**
    - 将生成目录添加到 `.gitignore`
-   - 在 CI/CD 中运行 `generateSymbolCraftIcons` 任务
+   - 在 CI/CD 中运行 `generateSymbolKraftIcons` 任务
    - 优点：保持仓库干净，避免合并冲突
 
 2. **提交生成文件**
@@ -463,7 +471,7 @@ your-project/
 ### 多层缓存架构
 
 1. **SVG 下载缓存**
-   - 默认位置：`build/symbolcraft-cache/svg-cache/`
+   - 默认位置：`build/symbolkraft-cache/svg-cache/`
    - 有效期：7天
    - 包含：SVG 文件 + 元数据（时间戳、URL、哈希值）
    - 自动清理：配置变更时自动删除不再需要的缓存文件
@@ -478,23 +486,23 @@ your-project/
 
 **相对路径（默认）：**
 ```kotlin
-symbolCraft {
-    cacheDirectory.set("symbolcraft-cache")  // → build/symbolcraft-cache/
+symbolKraft {
+    cacheDirectory.set("symbolkraft-cache")  // → build/symbolkraft-cache/
     // 自动清理: ✅ 启用（项目私有缓存）
 }
 ```
 
 **绝对路径（用于共享/全局缓存）：**
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Unix/Linux/macOS
-    cacheDirectory.set("/var/tmp/symbolcraft")
+    cacheDirectory.set("/var/tmp/symbolkraft")
 
     // Windows
-    cacheDirectory.set("""C:\Temp\SymbolCraft""")
+    cacheDirectory.set("""C:\Temp\SymbolKraft""")
 
     // 网络共享（Windows UNC）
-    cacheDirectory.set("""\\server\share\symbolcraft-cache""")
+    cacheDirectory.set("""\\server\share\symbolkraft-cache""")
 
     // 自动清理: ❌ 禁用（避免多项目冲突）
 }
@@ -511,17 +519,17 @@ symbolCraft {
 **使用共享缓存时的输出：**
 ```
 ℹ️  Cache cleanup skipped: Using shared cache outside build directory
-   Cache location: /var/tmp/symbolcraft
+   Cache location: /var/tmp/symbolkraft
    Shared caches are preserved to avoid conflicts across projects
 ```
 
 **手动清理（如需要）：**
 ```bash
 # 清理30天前的旧文件
-find /var/tmp/symbolcraft -type f -mtime +30 -delete
+find /var/tmp/symbolkraft -type f -mtime +30 -delete
 
 # 或者清理整个共享缓存
-rm -rf /var/tmp/symbolcraft
+rm -rf /var/tmp/symbolkraft
 ```
 
 ### 缓存统计
@@ -574,7 +582,7 @@ rm -rf /var/tmp/symbolcraft
 ### 批量配置图标
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // 基础图标集
     val basicIcons = listOf("home", "search", "person", "settings")
     basicIcons.forEach { icon ->
@@ -604,7 +612,7 @@ symbolCraft {
 **单个图标配置：**
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // 单个外部图标
     externalIcon(
         name = "bell",
@@ -618,7 +626,7 @@ symbolCraft {
 **同一库的多个图标：**
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // 定义图标列表
     val bootstrapIcons = listOf("bell", "house", "person", "gear")
 
@@ -639,7 +647,7 @@ symbolCraft {
 **使用多个不同图标库：**
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Material Symbols 图标
     materialSymbol("favorite") {
         standardWeights()
@@ -673,7 +681,7 @@ symbolCraft {
 **多样式变体的图标**（如 outline/solid、filled/unfilled）：
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // 单个图标的多个填充变体
     externalIcon("home", libraryName = "official") {
         urlTemplate = "https://example.com/{name}_{fill}_24px.svg"
@@ -710,7 +718,7 @@ symbolCraft {
 **使用完整 URL：**
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // 从 esm.sh 获取 Bootstrap Icons
     val bootstrapIcons = listOf("bell", "calendar", "clock", "envelope")
     externalIcons(*bootstrapIcons.toTypedArray(), libraryName = "bootstrap-icons") {
@@ -737,7 +745,7 @@ symbolCraft {
 ### 自定义缓存配置
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // 禁用缓存（不推荐）
     cacheEnabled.set(false)
 
@@ -745,7 +753,7 @@ symbolCraft {
     cacheDirectory.set("custom-cache")  // → build/custom-cache/
 
     // 或使用绝对路径实现跨项目共享缓存
-    cacheDirectory.set("/var/tmp/symbolcraft")  // → /var/tmp/symbolcraft/
+    cacheDirectory.set("/var/tmp/symbolkraft")  // → /var/tmp/symbolkraft/
 
     // 配置下载重试行为
     maxRetries.set(5)       // 增加重试次数
@@ -755,7 +763,7 @@ symbolCraft {
 
 **注意**: 如需强制重新生成所有图标，请使用 Gradle 内置选项：
 ```bash
-./gradlew generateSymbolCraftIcons --rerun-tasks
+./gradlew generateSymbolKraftIcons --rerun-tasks
 ```
 
 ## 🔍 故障排除
@@ -770,17 +778,17 @@ symbolCraft {
 
 2. **缓存问题**
    ```bash
-   # 清理 SymbolCraft 缓存
-   ./gradlew cleanSymbolCraftCache
+   # 清理 SymbolKraft 缓存
+   ./gradlew cleanSymbolKraftCache
 
    # 或者清理整个 build 目录（包括缓存）
    ./gradlew clean
 
    # 强制重新生成所有图标
-   ./gradlew generateSymbolCraftIcons --rerun-tasks
+   ./gradlew generateSymbolKraftIcons --rerun-tasks
    ```
 
-   注意：缓存文件默认存储在 `build/symbolcraft-cache/` 目录，运行 `./gradlew clean` 时会自动清理。
+   注意：缓存文件默认存储在 `build/symbolkraft-cache/` 目录，运行 `./gradlew clean` 时会自动清理。
 
 3. **图标未找到**
    ```
@@ -791,7 +799,7 @@ symbolCraft {
 4. **配置缓存问题**
    如果遇到配置缓存相关错误，可以暂时禁用：
    ```bash
-   ./gradlew generateSymbolCraftIcons --no-configuration-cache
+   ./gradlew generateSymbolKraftIcons --no-configuration-cache
    ```
 
 5. **生成文件在 Git 中显示为新文件**
@@ -805,18 +813,18 @@ symbolCraft {
 
 ```bash
 # 详细日志
-./gradlew generateSymbolCraftIcons --info
+./gradlew generateSymbolKraftIcons --info
 
 # 堆栈跟踪
-./gradlew generateSymbolCraftIcons --stacktrace
+./gradlew generateSymbolKraftIcons --stacktrace
 ```
 
 ## 🏗 架构设计
 
 ### 核心组件
 
-- **SymbolCraftPlugin** - 主插件类，注册任务并连接扩展
-- **SymbolCraftExtension** - DSL 配置接口，包含 MaterialSymbolsBuilder 和 ExternalIconBuilder
+- **SymbolKraftPlugin** - 主插件类，注册任务并连接扩展
+- **SymbolKraftExtension** - DSL 配置接口，包含 MaterialSymbolsBuilder 和 ExternalIconBuilder
 - **GenerateSymbolsTask** - 核心生成任务，支持并行下载和配置重试逻辑
 - **NamingConfig** - 图标命名转换配置
 - **IconNameTransformer** - 灵活的命名规则转换器
@@ -834,12 +842,12 @@ symbolCraft {
 
 ## 🎮 示例应用
 
-项目包含一个完整的 Kotlin Multiplatform 示例应用，演示 SymbolCraft 的使用：
+项目包含一个完整的 Kotlin Multiplatform 示例应用，演示 SymbolKraft 的使用：
 
 ### 示例应用特性
 
 - **多平台**: 支持 Android、iOS 和 Desktop (JVM)
-- **生成图标**: 使用 SymbolCraft 生成 Material Symbols 图标
+- **生成图标**: 使用 SymbolKraft 生成 Material Symbols 图标
 - **预览支持**: 包含所有图标的生成 Compose 预览
 - **真实使用**: 展示实际实现模式
 
@@ -850,7 +858,7 @@ symbolCraft {
 cd example
 
 # 生成 Material Symbols 图标
-./gradlew generateSymbolCraftIcons
+./gradlew generateSymbolKraftIcons
 
 # 运行 Android 应用
 ./gradlew :composeApp:assembleDebug
@@ -866,8 +874,8 @@ cd example
 示例应用演示了各种配置选项：
 
 ```kotlin
-symbolCraft {
-    packageName.set("io.github.kingsword09.example")
+symbolKraft {
+    packageName.set("com.ebisuzawa.symbolkraft.example")
     outputDirectory.set("src/commonMain/kotlin/generated/symbols")
     generatePreview.set(true)
 
@@ -919,8 +927,8 @@ symbolCraft {
 
 1. 克隆仓库：
 ```bash
-git clone https://github.com/kingsword09/SymbolCraft.git
-cd SymbolCraft
+git clone https://github.com/shovel-kun/SymbolKraft.git
+cd SymbolKraft
 ```
 
 2. 构建插件：
@@ -936,7 +944,7 @@ cd SymbolCraft
 4. 运行示例应用：
 ```bash
 cd example
-./gradlew generateSymbolCraftIcons
+./gradlew generateSymbolKraftIcons
 ./gradlew :composeApp:assembleDebug
 ```
 
@@ -944,7 +952,7 @@ cd example
 
 1. 在 `src/main/kotlin/` 中修改插件源代码
 2. 构建并本地发布：`./gradlew publishToMavenLocal`
-3. 使用示例应用测试变更：`cd example && ./gradlew generateSymbolCraftIcons`
+3. 使用示例应用测试变更：`cd example && ./gradlew generateSymbolKraftIcons`
 4. 运行测试：`./gradlew test`
 5. 提交 pull request
 
@@ -958,4 +966,4 @@ cd example
 
 ## 📄 许可证
 
-Apache 2.0 License - 详见 [LICENSE](LICENSE) 文件
+Apache 2.0 License - 详见 [LICENSE](LICENSE) 和 [NOTICE](NOTICE) 文件。

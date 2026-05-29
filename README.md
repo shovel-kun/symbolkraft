@@ -1,10 +1,15 @@
-# SymbolCraft 🎨
+# SymbolKraft 🎨
 
-![Maven Central Version](https://img.shields.io/maven-central/v/io.github.kingsword09/symbolcraft)
+![Maven Central Version](https://img.shields.io/maven-central/v/com.ebisuzawa/symbolkraft)
 
 > **Language**: [English](README.md) | [中文](README_ZH.md)
 
 A powerful Gradle plugin for generating icons on-demand from multiple icon libraries (Material Symbols, Bootstrap Icons, Heroicons, etc.) in Kotlin Multiplatform projects, featuring intelligent caching, deterministic builds, and high-performance parallel generation.
+
+> SymbolKraft is a modified fork of
+> [SymbolCraft](https://github.com/kingsword09/SymbolCraft). It is published
+> under new `com.ebisuzawa` coordinates and is not distributed as the original
+> `io.github.kingsword09.symbolcraft` plugin.
 
 ## ✨ Features
 
@@ -31,21 +36,21 @@ In your `libs.versions.toml` file:
 
 ```toml
 [plugins]
-symbolCraft = { id = "io.github.kingsword09.symbolcraft", version = "x.x.x" }
+symbolKraft = { id = "com.ebisuzawa.symbolkraft", version = "x.x.x" }
 ```
 
 In your `build.gradle.kts` file:
 
 ```kotlin
 plugins {
-    alias(libs.plugins.symbolCraft)
+    alias(libs.plugins.symbolKraft)
 }
 ```
 
 ### 2. Configure the plugin
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Basic configuration
     packageName.set("com.app.symbols")
     outputDirectory.set("src/commonMain/kotlin")  // Support multiplatform projects
@@ -111,7 +116,7 @@ symbolCraft {
 Run the following command to generate configured icons:
 
 ```bash
-./gradlew generateSymbolCraftIcons
+./gradlew generateSymbolKraftIcons
 ```
 
 The generation process will show detailed progress:
@@ -187,7 +192,7 @@ fun MyScreen() {
 ### Enable preview generation
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Enable preview functionality
     generatePreview.set(true)  // Generate @Preview functions for icons
 
@@ -210,19 +215,24 @@ After generation, you can view previews in Android Studio or IntelliJ IDEA's Pre
 2. Click the "Preview" panel on the right side of the IDE (Android Studio/IntelliJ IDEA)
 3. View icon previews in the IDE
 
-### Multi-platform preview support
+### Multiplatform preview support
 
-The preview generation is handled by the underlying `svg-to-compose` library and supports:
-- **Android projects**: Using `androidx.compose.ui.tooling.preview.Preview`
-- **Desktop projects**: Using `androidx.compose.desktop.ui.tooling.preview.Preview`
-- **Multiplatform projects**: Depending on the library configuration
+Generated preview functions use `androidx.compose.ui.tooling.preview.Preview`. Add the Compose
+Multiplatform preview dependency to any source set that compiles generated previews:
+
+```kotlin
+implementation("org.jetbrains.compose.ui:ui-tooling-preview")
+```
+
+The old `org.jetbrains.compose.ui.tooling.preview.Preview` annotation is no longer generated or
+supported.
 
 ## 📋 Configuration Options
 
 ### Basic configuration
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Generated Kotlin package name (required)
     packageName.set("com.yourcompany.app.symbols")
 
@@ -231,7 +241,7 @@ symbolCraft {
 
     // Cache configuration
     cacheEnabled.set(true)  // Default: true
-    cacheDirectory.set("symbolcraft-cache")  // Default: "symbolcraft-cache" (relative to build/)
+    cacheDirectory.set("symbolkraft-cache")  // Default: "symbolkraft-cache" (relative to build/)
 
     // Preview configuration
     generatePreview.set(false)  // Default: false - Whether to generate Compose @Preview functions
@@ -271,7 +281,7 @@ symbolCraft {
 ### Convenient configuration methods
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     materialSymbol("example") {
         // Basic method (using Int)
         style(weight = 400, variant = SymbolVariant.OUTLINED, fill = SymbolFill.UNFILLED)
@@ -304,7 +314,7 @@ symbolCraft {
 Control how generated icon class names are transformed:
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     naming {
         // Preset conventions
         pascalCase()              // HomeIcon (default)
@@ -348,33 +358,33 @@ The plugin provides the following Gradle tasks:
 
 | Task | Description |
 |------|-------------|
-| `generateSymbolCraftIcons` | Generate configured icons from all libraries |
-| `cleanSymbolCraftCache` | Clean cached SVG files |
-| `cleanSymbolCraftIcons` | Clean all generated icon files |
-| `validateSymbolCraftConfig` | Validate icon configuration validity |
+| `generateSymbolKraftIcons` | Generate configured icons from all libraries |
+| `cleanSymbolKraftCache` | Clean cached SVG files |
+| `cleanSymbolKraftIcons` | Clean all generated icon files |
+| `validateSymbolKraftConfig` | Validate icon configuration validity |
 
 ### Task examples
 
 ```bash
 # Generate icons (incremental build)
-./gradlew generateSymbolCraftIcons
+./gradlew generateSymbolKraftIcons
 
 # Force regenerate all icons
-./gradlew generateSymbolCraftIcons --rerun-tasks
+./gradlew generateSymbolKraftIcons --rerun-tasks
 
 # Clean cache
-./gradlew cleanSymbolCraftCache
+./gradlew cleanSymbolKraftCache
 
 # Clean generated files
-./gradlew cleanSymbolCraftIcons
+./gradlew cleanSymbolKraftIcons
 
 # Validate configuration
-./gradlew validateSymbolCraftConfig
+./gradlew validateSymbolKraftConfig
 ```
 
 ## 📚 Documentation (Dokka)
 
-SymbolCraft includes a Dokka V2 setup so you can publish API documentation for the plugin and its DSL.
+SymbolKraft includes a Dokka V2 setup so you can publish API documentation for the plugin and its DSL.
 
 ### Generate documentation locally
 
@@ -418,7 +428,7 @@ your-project/
 │                           ├── BellBootstrapicons.kt
 │                           └── HouseBootstrapicons.kt
 └── build/
-    └── symbolcraft-cache/                        # Cache directory (default location)
+    └── symbolkraft-cache/                        # Cache directory (default location)
         ├── temp-svgs/                            # SVG temporary files (organized by library)
         │   ├── material-symbols/
         │   └── external-bootstrapicons/
@@ -432,7 +442,7 @@ your-project/
 To avoid generated files showing as new files in Git, recommend adding the generation directory to `.gitignore`:
 
 ```gitignore
-# SymbolCraft generated files (adjust package name to match your configuration)
+# SymbolKraft generated files (adjust package name to match your configuration)
 **/icons/
 **/__Icons.kt
 
@@ -449,7 +459,7 @@ There are two strategies for handling generated files:
 
 1. **Ignore generated files (recommended)**
    - Add generation directory to `.gitignore`
-   - Run `generateSymbolCraftIcons` task in CI/CD
+   - Run `generateSymbolKraftIcons` task in CI/CD
    - Advantages: Keep repository clean, avoid merge conflicts
 
 2. **Commit generated files**
@@ -462,7 +472,7 @@ There are two strategies for handling generated files:
 ### Multi-layer cache architecture
 
 1. **SVG download cache**
-   - Default location: `build/symbolcraft-cache/svg-cache/`
+   - Default location: `build/symbolkraft-cache/svg-cache/`
    - Validity: 7 days
    - Contains: SVG files + metadata (timestamp, URL, hash)
    - Auto-cleanup: Unused cache files are automatically removed when configuration changes
@@ -477,23 +487,23 @@ There are two strategies for handling generated files:
 
 **Relative path (default):**
 ```kotlin
-symbolCraft {
-    cacheDirectory.set("symbolcraft-cache")  // → build/symbolcraft-cache/
+symbolKraft {
+    cacheDirectory.set("symbolkraft-cache")  // → build/symbolkraft-cache/
     // Auto-cleanup: ✅ Enabled (project-local cache)
 }
 ```
 
 **Absolute path (for shared/global cache):**
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Unix/Linux/macOS
-    cacheDirectory.set("/var/tmp/symbolcraft")
+    cacheDirectory.set("/var/tmp/symbolkraft")
 
     // Windows
-    cacheDirectory.set("""C:\Temp\SymbolCraft""")
+    cacheDirectory.set("""C:\Temp\SymbolKraft""")
 
     // Network share (Windows UNC)
-    cacheDirectory.set("""\\server\share\symbolcraft-cache""")
+    cacheDirectory.set("""\\server\share\symbolkraft-cache""")
 
     // Auto-cleanup: ❌ Disabled (to prevent conflicts across projects)
 }
@@ -510,17 +520,17 @@ When using absolute paths for shared caching across multiple projects:
 **Output when using shared cache:**
 ```
 ℹ️  Cache cleanup skipped: Using shared cache outside build directory
-   Cache location: /var/tmp/symbolcraft
+   Cache location: /var/tmp/symbolkraft
    Shared caches are preserved to avoid conflicts across projects
 ```
 
 **Manual cleanup (if needed):**
 ```bash
 # Clean old files (older than 30 days)
-find /var/tmp/symbolcraft -type f -mtime +30 -delete
+find /var/tmp/symbolkraft -type f -mtime +30 -delete
 
 # Or clean entire shared cache
-rm -rf /var/tmp/symbolcraft
+rm -rf /var/tmp/symbolkraft
 ```
 
 ### Cache statistics
@@ -573,7 +583,7 @@ Use [Material Symbols Demo](https://marella.github.io/material-symbols/demo/) to
 ### Batch configure icons
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Basic icon set
     val basicIcons = listOf("home", "search", "person", "settings")
     basicIcons.forEach { icon ->
@@ -603,7 +613,7 @@ You can add icons from other libraries or custom sources using URL templates.
 **Single icon configuration:**
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Single external icon
     externalIcon(
         name = "bell",
@@ -617,7 +627,7 @@ symbolCraft {
 **Multiple icons from the same library:**
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Define icon list
     val bootstrapIcons = listOf("bell", "house", "person", "gear")
 
@@ -638,7 +648,7 @@ symbolCraft {
 **Using multiple different icon libraries:**
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Material Symbols icons
     materialSymbol("favorite") {
         standardWeights()
@@ -672,7 +682,7 @@ symbolCraft {
 **Icons with multiple style variants** (e.g., outline/solid, filled/unfilled):
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Single icon with multiple fill variants
     externalIcon("home", libraryName = "official") {
         urlTemplate = "https://example.com/{name}_{fill}_24px.svg"
@@ -709,7 +719,7 @@ symbolCraft {
 **Using full URLs:**
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Bootstrap Icons from esm.sh
     val bootstrapIcons = listOf("bell", "calendar", "clock", "envelope")
     externalIcons(*bootstrapIcons.toTypedArray(), libraryName = "bootstrap-icons") {
@@ -736,7 +746,7 @@ symbolCraft {
 ### Custom cache configuration
 
 ```kotlin
-symbolCraft {
+symbolKraft {
     // Disable cache (not recommended)
     cacheEnabled.set(false)
 
@@ -744,7 +754,7 @@ symbolCraft {
     cacheDirectory.set("custom-cache")  // → build/custom-cache/
 
     // Or use absolute path for shared cache across projects
-    cacheDirectory.set("/var/tmp/symbolcraft")  // → /var/tmp/symbolcraft/
+    cacheDirectory.set("/var/tmp/symbolkraft")  // → /var/tmp/symbolkraft/
 
     // Configure download retry behavior
     maxRetries.set(5)       // Increase retry attempts
@@ -754,7 +764,7 @@ symbolCraft {
 
 **Note**: To force regenerate all icons, use Gradle's built-in option:
 ```bash
-./gradlew generateSymbolCraftIcons --rerun-tasks
+./gradlew generateSymbolKraftIcons --rerun-tasks
 ```
 
 ## 🔍 Troubleshooting
@@ -769,17 +779,17 @@ symbolCraft {
 
 2. **Cache issues**
    ```bash
-   # Clean SymbolCraft cache
-   ./gradlew cleanSymbolCraftCache
+   # Clean SymbolKraft cache
+   ./gradlew cleanSymbolKraftCache
 
    # Or clean entire build directory (including cache)
    ./gradlew clean
 
    # Force regenerate all icons
-   ./gradlew generateSymbolCraftIcons --rerun-tasks
+   ./gradlew generateSymbolKraftIcons --rerun-tasks
    ```
 
-   Note: Cache files are stored in `build/symbolcraft-cache/` by default and are automatically cleaned when running `./gradlew clean`.
+   Note: Cache files are stored in `build/symbolkraft-cache/` by default and are automatically cleaned when running `./gradlew clean`.
 
 3. **Icon not found**
    ```
@@ -790,7 +800,7 @@ symbolCraft {
 4. **Configuration cache issues**
    If you encounter configuration cache related errors, you can temporarily disable it:
    ```bash
-   ./gradlew generateSymbolCraftIcons --no-configuration-cache
+   ./gradlew generateSymbolKraftIcons --no-configuration-cache
    ```
 
 5. **Generated files showing as new files in Git**
@@ -804,18 +814,18 @@ symbolCraft {
 
 ```bash
 # Verbose logging
-./gradlew generateSymbolCraftIcons --info
+./gradlew generateSymbolKraftIcons --info
 
 # Stack trace
-./gradlew generateSymbolCraftIcons --stacktrace
+./gradlew generateSymbolKraftIcons --stacktrace
 ```
 
 ## 🏗 Architecture Design
 
 ### Core components
 
-- **SymbolCraftPlugin** - Main plugin class that registers tasks and wires the extension
-- **SymbolCraftExtension** - DSL configuration interface with MaterialSymbolsBuilder and ExternalIconBuilder
+- **SymbolKraftPlugin** - Main plugin class that registers tasks and wires the extension
+- **SymbolKraftExtension** - DSL configuration interface with MaterialSymbolsBuilder and ExternalIconBuilder
 - **GenerateSymbolsTask** - Core generation task with parallel downloads and configurable retry logic
 - **NamingConfig** - Icon naming transformation configuration
 - **IconNameTransformer** - Flexible naming convention transformer
@@ -833,12 +843,12 @@ Naming transformation → Deterministic processing → Generate code → Optiona
 
 ## 🎮 Example Application
 
-The project includes a complete Kotlin Multiplatform example application that demonstrates SymbolCraft usage:
+The project includes a complete Kotlin Multiplatform example application that demonstrates SymbolKraft usage:
 
 ### Example app features
 
 - **Multi-platform**: Supports Android, iOS, and Desktop (JVM)
-- **Generated icons**: Uses SymbolCraft to generate Material Symbols icons
+- **Generated icons**: Uses SymbolKraft to generate Material Symbols icons
 - **Preview support**: Includes generated Compose previews for all icons
 - **Real-world usage**: Shows practical implementation patterns
 
@@ -849,7 +859,7 @@ The project includes a complete Kotlin Multiplatform example application that de
 cd example
 
 # Generate Material Symbols icons
-./gradlew generateSymbolCraftIcons
+./gradlew generateSymbolKraftIcons
 
 # Run Android app
 ./gradlew :composeApp:assembleDebug
@@ -865,8 +875,8 @@ cd example
 The example app demonstrates various configuration options:
 
 ```kotlin
-symbolCraft {
-    packageName.set("io.github.kingsword09.example")
+symbolKraft {
+    packageName.set("com.ebisuzawa.symbolkraft.example")
     outputDirectory.set("src/commonMain/kotlin/generated/symbols")
     generatePreview.set(true)
 
@@ -918,8 +928,8 @@ Issues and Pull Requests are welcome!
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/kingsword09/SymbolCraft.git
-cd SymbolCraft
+git clone https://github.com/shovel-kun/SymbolKraft.git
+cd SymbolKraft
 ```
 
 2. Build the plugin:
@@ -935,7 +945,7 @@ cd SymbolCraft
 4. Run example application:
 ```bash
 cd example
-./gradlew generateSymbolCraftIcons
+./gradlew generateSymbolKraftIcons
 ./gradlew :composeApp:assembleDebug
 ```
 
@@ -943,7 +953,7 @@ cd example
 
 1. Make changes to plugin source code in `src/main/kotlin/`
 2. Build and publish locally: `./gradlew publishToMavenLocal`
-3. Test changes using the example app: `cd example && ./gradlew generateSymbolCraftIcons`
+3. Test changes using the example app: `cd example && ./gradlew generateSymbolKraftIcons`
 4. Run tests: `./gradlew test`
 5. Submit pull request
 
@@ -957,4 +967,4 @@ cd example
 
 ## 📄 License
 
-Apache 2.0 License - See [LICENSE](LICENSE) file for details
+Apache 2.0 License - See [LICENSE](LICENSE) and [NOTICE](NOTICE) for details.
