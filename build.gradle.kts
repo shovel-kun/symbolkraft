@@ -1,9 +1,9 @@
+import org.gradle.api.publish.tasks.GenerateModuleMetadata
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.gradle.plugin.publish)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.dokka)
     alias(libs.plugins.dokka.javadoc)
@@ -50,20 +50,12 @@ dependencies {
     testImplementation(gradleTestKit())
 }
 
-// Configure Gradle Plugin Portal publication
+// Configure the Gradle plugin marker published to Maven Central.
 gradlePlugin {
-    website = "https://github.com/shovel-kun/SymbolKraft"
-    vcsUrl = "https://github.com/shovel-kun/SymbolKraft"
-
     plugins {
         create("symbolkraft") {
             id = "com.ebisuzawa.symbolkraft"
             implementationClass = "com.ebisuzawa.symbolkraft.plugin.SymbolKraftPlugin"
-            displayName = "SymbolKraft - Multi-Library Icon Generator"
-            description =
-                "Generate icons on-demand from multiple libraries (Material Symbols, Bootstrap Icons, etc.) for Compose Multiplatform with smart caching."
-            tags =
-                listOf("KMP", "Compose-Multiplatform", "material", "icons", "symbols", "generator")
         }
     }
 }
@@ -163,20 +155,13 @@ tasks.test {
 }
 
 // Generate sources and javadoc JARs
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
+java { withSourcesJar() }
 
 tasks.named("check") { dependsOn("ktfmtCheck") }
 
 tasks.withType<Jar>().configureEach { from(listOf("LICENSE", "NOTICE")) { into("META-INF") } }
 
-// Configure javadocJar to use Dokka V2 output
-tasks.named<Jar>("javadocJar") {
-    dependsOn("dokkaGeneratePublicationJavadoc")
-    from(layout.buildDirectory.dir("dokka/javadoc"))
-}
+tasks.withType<GenerateModuleMetadata>().configureEach { dependsOn("dokkaJavadocJar") }
 
 // Configure JAR manifest
 tasks.jar {

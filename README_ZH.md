@@ -32,6 +32,17 @@
 
 ### 1. 添加插件到项目
 
+SymbolKraft 通过 Maven Central 发布，因此请先在 settings 文件中为插件解析启用 Maven Central：
+
+```kotlin
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+```
+
 在你的 `libs.versions.toml` 文件中：
 
 ```toml
@@ -383,7 +394,7 @@ symbolKraft {
 
 ## 📚 文档生成（Dokka）
 
-SymbolKraft 提供 Dokka V2 配置，可为插件及其 DSL 生成可发布的 API 文档，便于同步到 Gradle Plugin Portal 或 Maven Central。
+SymbolKraft 提供 Dokka V2 配置，可为插件及其 DSL 生成可发布的 API 文档，便于发布到 Maven Central。
 
 ### 本地生成文档
 

@@ -32,6 +32,18 @@ A powerful Gradle plugin for generating icons on-demand from multiple icon libra
 
 ### 1. Add plugin to your project
 
+Because SymbolKraft is published through Maven Central, make sure your settings file includes
+Maven Central for plugin resolution:
+
+```kotlin
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+```
+
 In your `libs.versions.toml` file:
 
 ```toml
@@ -389,7 +401,7 @@ SymbolKraft includes a Dokka V2 setup so you can publish API documentation for t
 ### Generate documentation locally
 
 ```bash
-# Javadoc-style output (used for Maven Central / Plugin Portal publishing)
+# Javadoc-style output (used for Maven Central publishing)
 ./gradlew dokkaGeneratePublicationJavadoc
 
 # Optional: modern HTML format
